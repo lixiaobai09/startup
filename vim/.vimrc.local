@@ -1,0 +1,7 @@
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
+
+" set syntastic plugin to passive
+let g:syntastic_mode_map = { 'mode': 'passive'}
+set colorcolumn=80
