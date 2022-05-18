@@ -1,3 +1,6 @@
 [submodule "source_code/the_silver_searcher"]
 	path = source_code/the_silver_searcher
 	url = https://github.com/ggreer/the_silver_searcher.git
+[submodule "source_code/ctags"]
+	path = source_code/ctags
+	url = https://github.com/universal-ctags/ctags.git
