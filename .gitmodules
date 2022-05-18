@@ -4,3 +4,6 @@
 [submodule "source_code/ctags"]
 	path = source_code/ctags
 	url = https://github.com/universal-ctags/ctags.git
+[submodule "source_code/vim"]
+	path = source_code/vim
+	url = https://github.com/vim/vim.git
