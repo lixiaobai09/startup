@@ -3,19 +3,24 @@
 HERE="$(dirname $(readlink -f $0))"
 echo $HERE
 TIME_STAMPS=$(date "+%Y-%m-%d_%H-%M-%S")
+num_cores=$(cat /proc/cpuinfo | grep processor | wc -l)
+if [ $num_cores -ne 1 ]; then
+  num_cores=$((num_cores-1))
+fi
+echo "compile with $num_cores CPUs"
 
 read -p "install vim with lua,python? [y/n]" ans
 if [ "$ans" == "y" ]; then
   # install lua
   pushd $HERE/source_code/lua-5.4.4
-    make -j
+    make -j $num_cores
     make install "INSTALL_TOP=$HOME/software"
   popd
 
   # install ncurses
   pushd $HERE/source_code/ncurses-6.3
     ./configure --prefix=$HOME/software
-    make -j4
+    make -j $num_cores
     make install
   popd
 
@@ -36,7 +41,7 @@ if [ "$ans" == "y" ]; then
             --enable-fail-if-missing \
             --with-compiledby=leolord \
             --with-modified-by=leolord
-    make -j4
+    make -j $num_cores
     make install
   popd
 fi
@@ -58,6 +63,7 @@ if [ "$ans" == "y" ]; then
     cp -r $HERE/vim/. .
     if [ ! -e .vim/bundle ]; then mkdir .vim/bundle; fi
     git clone $vundle_url ./.vim/bundle/vundle
-    vim +BundleInstall! +BundleClean +q
+    # vim +BundleInstall! +BundleClean +q
+    vim +BundleInstall +BundleClean +q
   popd
 fi
