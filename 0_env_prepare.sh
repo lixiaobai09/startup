@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO: remove this 
-wget_flags="--no-check-certificate"
-
 HERE="$(dirname $(readlink -f $0))"
 echo $HERE
 echo "install environment ..."
