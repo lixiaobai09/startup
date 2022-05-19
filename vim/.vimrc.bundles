@@ -92,7 +92,7 @@
     " list only the plugin groups you will use
     if !exists('g:spf13_bundle_groups')
         " let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc',]
-        let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming',]
+        let g:spf13_bundle_groups=['general', 'writing', 'deoplete', 'programming',]
     endif
 
     " To override all the included bundles, add the following to your
@@ -180,12 +180,14 @@
             Bundle 'Valloric/YouCompleteMe'
             Bundle 'SirVer/ultisnips'
             Bundle 'honza/vim-snippets'
-        elseif count(g:spf13_bundle_groups, 'neocomplcache')
-            Bundle 'Shougo/neocomplcache'
+        elseif count(g:spf13_bundle_groups, 'deoplete') " for vim 8.1+
+            Bundle 'Shougo/deoplete.nvim'
+            Bundle 'roxma/nvim-yarp'
+            Bundle 'roxma/vim-hug-neovim-rpc'
             Bundle 'Shougo/neosnippet'
             Bundle 'Shougo/neosnippet-snippets'
             Bundle 'honza/vim-snippets'
-        elseif count(g:spf13_bundle_groups, 'neocomplete')
+        elseif count(g:spf13_bundle_groups, 'neocomplete') " only for vim 7.4 - 8.2.1066
             Bundle 'Shougo/neocomplete.vim.git'
             Bundle 'Shougo/neosnippet'
             Bundle 'Shougo/neosnippet-snippets'

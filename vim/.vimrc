@@ -866,34 +866,31 @@
             " let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
             " let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     " }
-    " neocomplcache {
-        elseif count(g:spf13_bundle_groups, 'neocomplcache')
+    " deoplete {
+        elseif count(g:spf13_bundle_groups, 'deoplete')
             let g:acp_enableAtStartup = 0
-            let g:neocomplcache_enable_at_startup = 1
-            let g:neocomplcache_enable_camel_case_completion = 1
-            let g:neocomplcache_enable_smart_case = 1
-            let g:neocomplcache_enable_underbar_completion = 1
-            let g:neocomplcache_enable_auto_delimiter = 1
-            let g:neocomplcache_max_list = 15
-            let g:neocomplcache_force_overwrite_completefunc = 1
+            let g:deoplete#enable_at_startup = 1
+            let g:deoplete#enable_auto_delimiter = 1
+            let g:deoplete#force_overwrite_completefunc = 1
+            call deoplete#custom#option("max_list", 15)
+            call deoplete#custom#option("smart_case", v:true)
+            call deoplete#custom#option("keyword_patterns", {'default': '\h\w*'})
+
+
 
             " Define dictionary.
-            let g:neocomplcache_dictionary_filetype_lists = {
+            let g:deoplete#sources#dictionary#dictionaries = {
                         \ 'default' : '',
                         \ 'vimshell' : $HOME.'/.vimshell_hist',
                         \ 'scheme' : $HOME.'/.gosh_completions'
                         \ }
 
-            " Define keyword.
-            if !exists('g:neocomplcache_keyword_patterns')
-                let g:neocomplcache_keyword_patterns = {}
-            endif
-            let g:neocomplcache_keyword_patterns._ = '\h\w*'
-
             " Plugin key-mappings {
                 " These two lines conflict with the default digraph mapping of <C-K>
-                imap <C-k> <Plug>(neosnippet_expand_or_jump)
-                smap <C-k> <Plug>(neosnippet_expand_or_jump)
+                if !exists('g:spf13_no_neosnippet_expand')
+                    imap <C-k> <Plug>(neosnippet_expand_or_jump)
+                    smap <C-k> <Plug>(neosnippet_expand_or_jump)
+                endif
                 if exists('g:spf13_noninvasive_completion')
                     inoremap <CR> <CR>
                     " <ESC> takes you out of insert mode
@@ -907,22 +904,28 @@
                     inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
                     inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
                 else
+                    " <C-k> Complete Snippet
+                    " <C-k> Jump to next snippet point
                     imap <silent><expr><C-k> neosnippet#expandable() ?
                                 \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
                                 \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
                     smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
 
-                    inoremap <expr><C-g> neocomplcache#undo_completion()
-                    inoremap <expr><C-l> neocomplcache#complete_common_string()
-                    "inoremap <expr><CR> neocomplcache#complete_common_string()
+                    inoremap <expr><C-g> deoplete#undo_completion()
+                    inoremap <expr><C-l> deoplete#complete_common_string()
+                    "inoremap <expr><CR> deoplete#complete_common_string()
+
+                    " <CR>: close popup
+                    " <s-CR>: close popup and save indent.
+                    inoremap <expr><s-CR> pumvisible() ? deoplete#smart_close_popup()."\<CR>" : "\<CR>"
 
                     function! CleverCr()
                         if pumvisible()
                             if neosnippet#expandable()
                                 let exp = "\<Plug>(neosnippet_expand)"
-                                return exp . neocomplcache#close_popup()
+                                return exp . deoplete#smart_close_popup()
                             else
-                                return neocomplcache#close_popup()
+                                return deoplete#smart_close_popup()
                             endif
                         else
                             return "\<CR>"
@@ -931,40 +934,47 @@
 
                     " <CR> close popup and save indent or expand snippet
                     imap <expr> <CR> CleverCr()
-
-                    " <CR>: close popup
-                    " <s-CR>: close popup and save indent.
-                    inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()."\<CR>" : "\<CR>"
-                    "inoremap <expr><CR> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-
                     " <C-h>, <BS>: close popup and delete backword char.
-                    inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-                    inoremap <expr><C-y> neocomplcache#close_popup()
+                    inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
+                    inoremap <expr><C-y> deoplete#smart_close_popup()
                 endif
                 " <TAB>: completion.
                 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
                 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
+
+                " Courtesy of Matteo Cavalleri
+
+                function! CleverTab()
+                    if pumvisible()
+                        return "\<C-n>"
+                    endif
+                    let substr = strpart(getline('.'), 0, col('.') - 1)
+                    let substr = matchstr(substr, '[^ \t]*$')
+                    if strlen(substr) == 0
+                        " nothing to match on empty string
+                        return "\<Tab>"
+                    else
+                        " existing text matching
+                        if neosnippet#expandable_or_jumpable()
+                            return "\<Plug>(neosnippet_expand_or_jump)"
+                        else
+                            return deoplete#manual_complete()
+                        endif
+                    endif
+                endfunction
+
+                imap <expr> <Tab> CleverTab()
             " }
 
-            " Enable omni completion.
-            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-            autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-            autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
             " Enable heavy omni completion.
-            if !exists('g:neocomplcache_omni_patterns')
-                let g:neocomplcache_omni_patterns = {}
+            if !exists('g:deoplete#sources#omni#input_patterns')
+                let g:deoplete#sources#omni#input_patterns = {}
             endif
-            let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-            let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-            let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-            let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-            let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-            let g:neocomplcache_omni_patterns.go = '\h\w*\.\?'
+            " let g:deoplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+            " let g:deoplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+            " let g:deoplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+            " let g:deoplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+            " let g:deoplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     " }
     " Normal Vim omni-completion {
     " To disable omni complete, add the following to your .vimrc.before.local file:
@@ -983,7 +993,7 @@
     " }
 
     " Snippets {
-        if count(g:spf13_bundle_groups, 'neocomplcache') ||
+        if count(g:spf13_bundle_groups, 'deoplete') ||
                     \ count(g:spf13_bundle_groups, 'neocomplete')
 
             " Use honza's snippets.
