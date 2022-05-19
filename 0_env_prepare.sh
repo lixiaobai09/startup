@@ -42,9 +42,15 @@ pushd $HERE
 read -p "install the silver search ag? [y/n]" ans
 if [ "$ans" == "y" ]; then
   # apt dependencies
-  # apt install pkg-config libpcre3-dev zlib1g-dev liblzma-dev
+  echo "Note: make sure installed software"
+  echo "  pkg-config libpcre3-dev zlib1g-dev liblzma-dev"
   pushd source_code/the_silver_searcher
    ./build.sh --prefix=$HOME/software 
+   if [ $? -ne 0 ]; then
+      echo "Note: make sure installed software"
+      echo "  pkg-config libpcre3-dev zlib1g-dev liblzma-dev"
+      exit 1
+   fi
    make install
   popd
 fi
