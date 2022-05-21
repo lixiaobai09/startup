@@ -73,6 +73,7 @@ read -p "add env values? [y/n]" ans
 
 if [ "$ans" == "y" ]; then
   pushd $HOME
+
   cp .bashrc .bashrc.old
   echo -e "\n\n# custom software setting" >> .bashrc
   echo 'export PATH="$HOME/software/bin:$PATH"' >> .bashrc
@@ -81,5 +82,11 @@ if [ "$ans" == "y" ]; then
   echo 'export CPATH="$HOME/software/include:$CPATH"' >> .bashrc
   echo 'export MANPATH="$HOME/software/share/man:$MANPATH"' >> .bashrc
 
-popd
+  popd
 fi
+
+echo "Want to use conda enviroment?"
+echo '  You can add $CONDA_PREFIX/bin to PATH'
+echo '  You can add $CONDA_PREFIX/lib to LD_LIBRARY_PATH and LIBRARY_PATH'
+echo '  You can add $CONDA_PREFIX/include to CPATH'
+echo '  You can add $CONDA_PREFIX/man to MANPATH'
