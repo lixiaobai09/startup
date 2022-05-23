@@ -1,6 +1,11 @@
 # Linux Startup
 
-[TOC]
+- [Linux Startup](#linux-startup)
+  * [How to use](#how-to-use)
+  * [Environment preparation (0_env_prepare.sh)](#environment-preparation-0_env_preparesh)
+  * [Vim (1_vim_install.sh)](#vim-1_vim_installsh)
+  * [Tmux (2_tmux_install.sh)](#tmux-2_tmux_installsh)
+  * [Zsh (3_zsh_install.sh)](#zsh-3_zsh_installsh)
 
 This repository is used to create a new development environment in Linux without root privilege. The environment includes miniconda, the_sivler_searcher, universal-ctags, vim, tmux, oh-my-zsh, and their configuration files.
 
