@@ -99,6 +99,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+# custom bindkey
+bindkey \^U backward-kill-line
 
 # custom software setting
 export PATH="$HOME/software/bin:$PATH"
