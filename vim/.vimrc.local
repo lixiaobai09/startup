@@ -1,6 +1,6 @@
 set encoding=utf-8
 
-let my_tabwidth=8
+let my_tabwidth=2
 execute "set tabstop=".my_tabwidth
 execute "set shiftwidth=".my_tabwidth
 execute "set softtabstop=".my_tabwidth
