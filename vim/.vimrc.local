@@ -1,8 +1,11 @@
 set encoding=utf-8
 
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
+let my_tabwidth=8
+execute "set tabstop=".my_tabwidth
+execute "set shiftwidth=".my_tabwidth
+execute "set softtabstop=".my_tabwidth
+
+unlet my_tabwidth
 
 " set syntastic plugin to passive
 let g:syntastic_mode_map = { 'mode': 'passive'}
