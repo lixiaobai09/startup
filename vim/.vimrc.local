@@ -1,12 +1,23 @@
 set encoding=utf-8
 
-let my_tabwidth=2
-execute "set tabstop=".my_tabwidth
-execute "set shiftwidth=".my_tabwidth
-execute "set softtabstop=".my_tabwidth
+function! SetTabs(size)
+  execute "set tabstop=" . a:size
+  execute "set shiftwidth=" . a:size
+  execute "set softtabstop=" . a:size
+endfunction
+autocmd VimEnter * call SetTabs(2)
+command! -nargs=1 SetTabs call SetTabs(<args>)
 
-unlet my_tabwidth
 
 " set syntastic plugin to passive
 let g:syntastic_mode_map = { 'mode': 'passive'}
 set colorcolumn=80
+
+
+if count(g:spf13_bundle_groups, 'deoplete')
+  " for copilot
+  imap <silent><script><expr> <C-L> copilot#Accept("\<CR>")
+  let g:copilot_no_tab_map = v:true
+  nmap - <Plug>(copilot-next)
+  imap <C-J> <Plug>(copilot-next)
+endif
