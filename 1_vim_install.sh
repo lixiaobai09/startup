@@ -26,12 +26,16 @@ if [ "$ans" == "y" ]; then
 
   # install vim
   pushd $HERE/source_code/vim
+    p3_v=$(python3 --version | sed 's/Python \([0-9]\.[0-9]*\)\..*/\1/g')
+    ln -s ${CONDA_PREFIX}/lib/libpython${p3_v}.so ${HOME}/software/lib/libpython${p3_v}.so
+    detail_f_name=$(readlink -f ${CONDA_PREFIX}/lib/libpython${p3_v}.so | awk -F "\/" '{print $NF}')
+    ln -s ${CONDA_PREFIX}/lib/${detail_f_name} ${HOME}/software/lib/${detail_f_name}
     ./configure \
             --prefix=$HOME/software \
             --enable-luainterp=yes \
             --with-lua-prefix=$HOME/software \
             --enable-python3interp \
-            --with-python3-config-dir=$CONDA_PREFIX/lib \
+            --with-python3-config-dir=$(python3-config --configdir) \
             --enable-cscope \
             --disable-netbeans \
             --enable-terminal \
