@@ -5,7 +5,7 @@ function! SetTabs(size)
   execute "set shiftwidth=" . a:size
   execute "set softtabstop=" . a:size
 endfunction
-autocmd VimEnter * call SetTabs(2)
+" autocmd VimEnter * call SetTabs(2)
 command! -nargs=1 SetTabs call SetTabs(<args>)
 
 
