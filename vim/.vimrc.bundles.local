@@ -1,4 +1,2 @@
 " for github copilot
-if count(g:spf13_bundle_groups, 'deoplete')
-  Bundle 'github/copilot.vim'
-endif
+Bundle 'github/copilot.vim'

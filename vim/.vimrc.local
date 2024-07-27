@@ -16,8 +16,16 @@ set colorcolumn=80
 
 if count(g:spf13_bundle_groups, 'deoplete')
   " for copilot
-  imap <silent><script><expr> <C-L> copilot#Accept("\<CR>")
+  imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
   let g:copilot_no_tab_map = v:true
-  nmap - <Plug>(copilot-next)
-  imap <C-J> <Plug>(copilot-next)
+  nmap - <Plug>(copilot-accept-word)
+  imap <C-L> <Plug>(copilot-accept-word)
+  " nmap - <Plug>(copilot-next)
+  " imap <C-J> <Plug>(copilot-next)
 endif
+
+set mouse=""
+" the copilot is conflict with deoplete plugin, disable one of them
+" or disable copilot plugin with vim command : Copilot disable, and
+" remove following line
+let g:deoplete#enable_at_startup = 0
