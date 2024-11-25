@@ -29,3 +29,6 @@ set mouse=""
 " or disable copilot plugin with vim command : Copilot disable, and
 " remove following line
 let g:deoplete#enable_at_startup = 0
+" not to remove trailing whitespace
+let g:spf13_keep_trailing_whitespace = 1
+" colorscheme sonokai
