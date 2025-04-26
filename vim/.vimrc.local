@@ -24,6 +24,8 @@ if count(g:spf13_bundle_groups, 'deoplete')
   " imap <C-J> <Plug>(copilot-next)
 endif
 
+" for macos vertical window roll
+set ttymouse=sgr
 set mouse=""
 " the copilot is conflict with deoplete plugin, disable one of them
 " or disable copilot plugin with vim command : Copilot disable, and
