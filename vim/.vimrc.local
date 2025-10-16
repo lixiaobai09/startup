@@ -8,6 +8,14 @@ endfunction
 " autocmd VimEnter * call SetTabs(2)
 command! -nargs=1 SetTabs call SetTabs(<args>)
 
+" copy present word + relative file name to system clipboard
+function! CopyFileNameToClipboard()
+  let content = expand('<cword>') . "\nfile: " . expand('%:.')
+  let @+ = content
+  echo "Copied " . @+ . " to clipboard"
+endfunction
+command! CN call CopyFileNameToClipboard()
+
 
 " set syntastic plugin to passive
 let g:syntastic_mode_map = { 'mode': 'passive'}
@@ -24,13 +32,13 @@ if count(g:spf13_bundle_groups, 'deoplete')
   " imap <C-J> <Plug>(copilot-next)
 endif
 
-" for macos vertical window roll
 set ttymouse=sgr
-set mouse=""
+set mouse=a
+" set mouse=""
 " the copilot is conflict with deoplete plugin, disable one of them
 " or disable copilot plugin with vim command : Copilot disable, and
 " remove following line
 let g:deoplete#enable_at_startup = 0
 " not to remove trailing whitespace
 let g:spf13_keep_trailing_whitespace = 1
-" colorscheme sonokai
+colorscheme sonokai
