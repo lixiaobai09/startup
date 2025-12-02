@@ -16,6 +16,15 @@ function! CopyFileNameToClipboard()
 endfunction
 command! CN call CopyFileNameToClipboard()
 
+" use Sync "dst:/dir" means rsync present relative file to the same dir on dst
+function! SyncToRemote(dst)
+  let src = expand('%:.')
+  let cmd = 'rsync -avz --progress ' . src . ' ' . a:dst . '/' . src
+  echo "Executing: " . cmd
+  " excute cmd in terminal to see progress
+  execute '!' . cmd
+endfunction
+command! -nargs=1 Sync call SyncToRemote(<f-args>)
 
 " set syntastic plugin to passive
 let g:syntastic_mode_map = { 'mode': 'passive'}
