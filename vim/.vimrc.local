@@ -52,3 +52,13 @@ let g:deoplete#enable_at_startup = 0
 " not to remove trailing whitespace
 let g:spf13_keep_trailing_whitespace = 1
 colorscheme sonokai
+
+" CtrlP: force ag-based file listing instead of `git ls-files`.
+" `git ls-files` at a superproject root treats submodules (e.g.
+" github-opensource/) as opaque gitlinks and won't recurse into them,
+" so files inside submodules never show up in CtrlP. `ag` just walks
+" the directory tree (still honoring .gitignore) and doesn't care
+" about submodule boundaries, so it finds files on both sides.
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
