@@ -9,12 +9,26 @@ endfunction
 command! -nargs=1 SetTabs call SetTabs(<args>)
 
 " copy present word + relative file name to system clipboard
-function! CopyFileNameToClipboard()
+function! CopyFileNameAndKeyToClipboard()
   let content = expand('<cword>') . "\nfile: " . expand('%:.')
   let @+ = content
   echo "Copied " . @+ . " to clipboard"
 endfunction
-command! CN call CopyFileNameToClipboard()
+command! CN call CopyFileNameAndKeyToClipboard()
+
+" copy relative file name and line number to system clipboard
+" if no selected text, copy current line number,
+"   if selected text, copy the first line number - last line number, eg 5-10
+function! CopyFileNameToClipboard() range
+  if a:firstline != a:lastline
+    let content = expand('%:.') . ":" . a:firstline . "-" . a:lastline
+  else
+    let content = expand('%:.') . ":" . a:firstline
+  endif
+  let @+ = content
+  echo "Copied " . @+ . " to clipboard"
+endfunction
+command! -range CF <line1>,<line2>call CopyFileNameToClipboard()
 
 " use Sync "dst:/dir" means rsync present relative file to the same dir on dst
 function! SyncToRemote(dst)
@@ -62,3 +76,39 @@ colorscheme sonokai
 if executable('ag')
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
+
+" 确保只在整个 Vim 启动和退出时处理 tag 栈，避免频繁覆盖
+augroup HardcoreTagStack
+    autocmd!
+    " 1. 只有在整个 Vim 刚启动、且进入第一个文件后，才恢复一次历史栈
+    autocmd VimEnter * call s:RestoreTagStackGlobal()
+    " 2. 只有在完全退出 Vim 时，才将当前的最新栈持久化
+    autocmd VimLeavePre * call s:SaveTagStackGlobal()
+augroup END
+
+function! s:SaveTagStackGlobal()
+    let l:winid = win_getid()
+    let l:stack = gettagstack(l:winid)
+
+    " 如果 tag 栈彻底为空，直接删掉旧文件，免得下次误载
+    if empty(l:stack) || l:stack.length == 0
+        if filereadable('.tagstack') | call delete('.tagstack') | endif
+        return
+    endif
+
+    " 将最新的栈持久化到当前目录下的隐藏文件中
+    call writefile([json_encode(l:stack)], '.tagstack')
+endfunction
+
+function! s:RestoreTagStackGlobal()
+    if filereadable('.tagstack')
+        let l:lines = readfile('.tagstack')
+        if !empty(l:lines)
+            let l:stack = json_decode(l:lines[0])
+            let l:winid = win_getid()
+            " 用 'r' 彻底替换当前窗口的栈
+            call settagstack(l:winid, l:stack, 'r')
+        endif
+    endif
+endfunction
+
