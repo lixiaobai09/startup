@@ -112,3 +112,6 @@ function! s:RestoreTagStackGlobal()
     endif
 endfunction
 
+" config for Tagbar plugin
+let g:tagbar_sort = 0
+set updatetime=500
