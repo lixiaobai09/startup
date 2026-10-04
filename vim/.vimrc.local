@@ -25,8 +25,18 @@ function! CopyFileNameToClipboard() range
   else
     let content = expand('%:.') . ":" . a:firstline
   endif
-  let @+ = content
-  echo "Copied " . @+ . " to clipboard"
+
+  " Write to + register only if this Vim supports clipboard
+  if has('clipboard')
+    let @+ = content
+  endif
+
+  " Always try OSC52 for the local machine clipboard
+  if exists('*OSCYank')
+    call OSCYank(content)
+  endif
+
+  echo "Copied " . content . " to clipboard"
 endfunction
 command! -range CF <line1>,<line2>call CopyFileNameToClipboard()
 
@@ -115,3 +125,8 @@ endfunction
 " config for Tagbar plugin
 let g:tagbar_sort = 0
 set updatetime=500
+
+" for remote clipboard
+vnoremap <leader>y :OSCYankVisual<CR>
+nnoremap <leader>y :OSCYankOperator<CR>
+nnoremap <leader>yy :OSCYankLine<CR>
