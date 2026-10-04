@@ -1,3 +1,4 @@
 " for github copilot
 Bundle 'github/copilot.vim'
 Bundle 'sainnhe/sonokai'
+Bundle 'ojroques/vim-oscyank'
